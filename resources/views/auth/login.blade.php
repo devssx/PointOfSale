@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <el-button type="success" round>Success</el-button>
+                    <example-component></example-component>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

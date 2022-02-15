@@ -6947,9 +6947,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     console.log('Component mounted.');
+  },
+  data: function data() {
+    return {
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }, {
+        name: 'food2.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }]
+    };
+  },
+  methods: {
+    handleRemove: function handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview: function handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed: function handleExceed(files, fileList) {
+      this.$message.warning("El l\xEDmite es 3, haz seleccionado ".concat(files.length, " archivos esta vez, a\xF1ade hasta ").concat(files.length + fileList.length));
+    }
   }
 });
 
@@ -91756,32 +91779,35 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "container" }, [
-      _c("div", { staticClass: "row justify-content-center" }, [
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "card-header" }, [
-              _vm._v("Example Component"),
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              ),
-            ]),
-          ]),
-        ]),
+  return _c(
+    "el-upload",
+    {
+      staticClass: "upload-demo",
+      attrs: {
+        action: "https://jsonplaceholder.typicode.com/posts/",
+        "on-preview": _vm.handlePreview,
+        "on-remove": _vm.handleRemove,
+        multiple: "",
+        limit: 3,
+        "on-exceed": _vm.handleExceed,
+        "file-list": _vm.fileList,
+      },
+    },
+    [
+      _c("el-button", { attrs: { size: "small", type: "primary" } }, [
+        _vm._v("Clic para subir archivo"),
       ]),
-    ])
-  },
-]
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "el-upload__tip", attrs: { slot: "tip" }, slot: "tip" },
+        [_vm._v("\n    Solo archivos jpg/png con un tamaño menor de 500kb\n  ")]
+      ),
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
