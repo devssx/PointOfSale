@@ -1,2 +1,2 @@
 # PointOfSale
-Laravel Point Of Sale
+Laravel Point Of Sale system
