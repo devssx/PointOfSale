@@ -12,9 +12,15 @@ import lang from 'element-ui/lib/locale/lang/es';
 import locale from 'element-ui/lib/locale';
 import ElementUI from 'element-ui';
 
+import commons from './mixins/commons';
+
 Vue.use(ElementUI, {
     size: 'medium'
 });
+
+Vue.mixin(commons);
+
+
 
 /**
  * The following block of code may be used to automatically register your
@@ -37,6 +43,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    mixins: [commons],
     data() {
         return {
             primaryColor: "#021C73"
