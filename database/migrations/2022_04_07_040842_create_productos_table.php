@@ -23,7 +23,7 @@ class CreateProductosTable extends Migration
             $table->string('especificacion', 500);
             $table->decimal('precio');
             $table->unsignedInteger('maximos')->default(0);
-            $table->decimunsignedIntegeral('minimos')->default(0);
+            $table->unsignedInteger('minimos')->default(0);
             $table->boolean('stock');
             $table->tinyInteger('favorito');
             $table->string('image')->default('');
