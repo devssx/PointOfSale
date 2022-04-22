@@ -18,6 +18,39 @@ class ProductoController extends Controller
     }
 
     /**
+     * Obtiene Producto
+     * 
+     * cb: codigo de barras
+     * kw: keywords (nombre or descripcion)
+     * id: id
+     * all: regresa todos
+     */
+    public function search(Request $request)
+    {
+        if ($request->filled('cb')) {
+            return Producto::where('codBar', $request->get('cb'))->get();
+        }
+
+        if ($request->filled('kw')) {
+            return Producto::where('nombre', 'LIKE', '%' . $request->get('kw') . '%')
+                ->orWhere('descripcion', 'LIKE', '%' . $request->get('kw') . '%')
+                ->paginate(10)
+                ->setPath('')
+                ->appends(array('search' => $request->get('kw'),));
+        }
+
+        if ($request->filled('id')) {
+            return Producto::where('id', $request->get('id'))->get();
+        }
+
+        if ($request->has('all')) {
+            return Producto::all();
+        }
+
+        return Producto::paginate(10);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
