@@ -15,11 +15,11 @@
       <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
       <el-col :span="16">
         <div>
-          <el-input placeholder="Buscar" v-model="input" clearable></el-input>
+          <el-input placeholder="Buscar" v-model="inputSearch" clearable></el-input>
         </div>
       </el-col>
       <el-col :span="2">
-          <el-button>Search</el-button>
+        <el-button @click="search">Search</el-button>
       </el-col>
     </el-row>
     <el-row>
@@ -97,7 +97,7 @@ export default {
   data() {
     return {
       activeName: 'first',
-      input: '',
+      inputSearch: '',
       fileList: [
         {
           name: 'food.jpeg',
@@ -113,6 +113,17 @@ export default {
     }
   },
   methods: {
+    search() {
+      let $this = this
+      axios
+        .get(`/api/search?kw=${this.inputSearch}`)
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
     handleClick(tab, event) {
       console.log(tab, event)
     },

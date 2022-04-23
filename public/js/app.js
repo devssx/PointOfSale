@@ -7087,7 +7087,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       activeName: 'first',
-      input: '',
+      inputSearch: '',
       fileList: [{
         name: 'food.jpeg',
         url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
@@ -7098,6 +7098,14 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    search: function search() {
+      var $this = this;
+      axios.get("/api/search?kw=".concat(this.inputSearch)).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    },
     handleClick: function handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -92505,11 +92513,11 @@ var render = function () {
                 _c("el-input", {
                   attrs: { placeholder: "Buscar", clearable: "" },
                   model: {
-                    value: _vm.input,
+                    value: _vm.inputSearch,
                     callback: function ($$v) {
-                      _vm.input = $$v
+                      _vm.inputSearch = $$v
                     },
-                    expression: "input",
+                    expression: "inputSearch",
                   },
                 }),
               ],
@@ -92520,7 +92528,11 @@ var render = function () {
           _c(
             "el-col",
             { attrs: { span: 2 } },
-            [_c("el-button", [_vm._v("Search")])],
+            [
+              _c("el-button", { on: { click: _vm.search } }, [
+                _vm._v("Search"),
+              ]),
+            ],
             1
           ),
         ],
