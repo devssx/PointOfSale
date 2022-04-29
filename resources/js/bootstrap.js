@@ -4,6 +4,9 @@ try {
     require('bootstrap');
 } catch (e) {}
 
+// npm install jquery
+window.$ = window.jQuery = require('jquery');
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the

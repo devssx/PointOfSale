@@ -36,6 +36,11 @@ Vue.mixin(commons);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('sales-component', require('./components/SalesComponent.vue').default);
 
+
+// tools
+Vue.component('file-upload', require('./components/Tools/UploadFile').default);
+Vue.component('image-dialog', require('./components/Tools/ImageDialog').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
