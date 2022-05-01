@@ -7090,19 +7090,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mounted: function mounted() {
     console.log('Component mounted.');
   },
   data: function data() {
     return {
-      items: [{
-        index: 0,
-        name: 'Jaula',
-        image: 'https://http2.mlstatic.com/D_NQ_NP_802768-MLM46356969261_062021-O.webp',
-        price: 1500
-      }],
-      num: 1,
+      items: [],
+      cantidad: 1,
       selectedItem: null,
       selectedFile: null,
       activeName: 'first',
@@ -7121,28 +7141,75 @@ __webpack_require__.r(__webpack_exports__);
       var $this = this;
       axios.get("/api/search?kw=".concat(this.inputSearch)).then(function (response) {
         console.log(response);
+        var data = response.data.data;
+
+        if (data.length == 0) {
+          $this.$confirm("\xBFDesea registrar el art\xEDculo \"".concat($this.inputSearch, "?"), 'Artículo desconocido', {
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            type: 'warning'
+          }).then(function (e) {
+            alert('not implemented yet!');
+          })["catch"](function (e) {});
+        }
+
+        for (var i = 0; i < data.length; i++) {
+          console.log(data[i]);
+          $this.items.push(data[i]);
+        }
+
+        for (var _i = 0; _i < $this.items.length; _i++) {
+          $this.items[_i].index = _i + 1;
+        } // set selected item (last item)
+
+
+        $this.itemClick($this.items.length > 0 ? $this.items[$this.items.length - 1] : null);
       })["catch"](function (error) {
         console.error(error);
       });
+    },
+    deleteItem: function deleteItem() {
+      var $this = this;
+      this.$confirm("\xBFDesea eliminar este art\xEDculo del carrito?", 'Eliminar Artículo', {
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        type: 'warning'
+      }).then(function (e) {
+        console.log(e);
+        $this.items = $this.items.filter(function (s) {
+          return s.id != $this.selectedItem.id;
+        });
+        $this.itemClick($this.items.length > 0 ? $this.items[0] : null);
+      })["catch"](function (e) {});
     },
     onCantChanged: function onCantChanged(value) {
       var _this = this;
 
       this.items = this.items.filter(function (s) {
-        return s.name != _this.selectedItem.name;
+        return s.id != _this.selectedItem.id;
       });
 
       for (var i = 0; i < value; i++) {
         this.items.push({
-          index: this.items.length + 1,
-          name: this.selectedItem.name,
-          price: this.selectedItem.price,
-          image: this.selectedItem.image
+          id: this.selectedItem.id,
+          image: this.selectedItem.image,
+          nombre: this.selectedItem.nombre,
+          codBar: this.selectedItem.codBar,
+          familia: this.selectedItem.familia,
+          descripcion: this.selectedItem.descripcion,
+          precio: this.selectedItem.precio,
+          maximos: this.selectedItem.maximos,
+          minimos: this.selectedItem.minimos,
+          stock: this.selectedItem.stock,
+          favorito: this.selectedItem.favorito,
+          created_at: this.selectedItem.created_at,
+          updated_at: this.selectedItem.updated_at,
+          index: 0
         });
       }
 
-      for (var _i = 0; _i < this.items.length; _i++) {
-        this.items[_i].index = _i + 1;
+      for (var _i2 = 0; _i2 < this.items.length; _i2++) {
+        this.items[_i2].index = _i2 + 1;
       }
     },
     handleClick: function handleClick(tab, event) {
@@ -7174,10 +7241,30 @@ __webpack_require__.r(__webpack_exports__);
     },
     itemClick: function itemClick(e) {
       this.selectedItem = e;
-      this.num = this.items.filter(function (s) {
-        return s.name == e.name;
+      this.cantidad = this.items.filter(function (s) {
+        return s.id == e.id;
       }).length;
-      console.log(e);
+    },
+    subtotal: function subtotal() {
+      return this.total() - this.iva();
+    },
+    iva: function iva() {
+      var t = 0;
+
+      for (var i = 0; i < this.items.length; i++) {
+        t += parseFloat(this.items[i].precio) * 0.8;
+      }
+
+      return t;
+    },
+    total: function total() {
+      var t = 0;
+
+      for (var i = 0; i < this.items.length; i++) {
+        t += parseFloat(this.items[i].precio);
+      }
+
+      return t;
     }
   }
 });
@@ -14551,7 +14638,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".itemlist {\n  max-width: 490px;\n  width: 100%;\n  border-radius: 12px;\n  font-family: \"Source Sans Pro\", sans-serif;\n}\n.itemlist header {\n  --start: 15%;\n  height: 130px;\n  background: red;\n  color: #fff;\n  position: relative;\n  border-radius: 14px 12px 0 0;\n  overflow: hidden;\n}\n.itemlist header .header__title {\n  position: absolute;\n  z-index: 2;\n  top: 50%;\n  right: calc(var(--start) * 0.75);\n  transform: translateY(-50%);\n  text-transform: uppercase;\n  margin: 0;\n}\n.itemlist header .header__title span {\n  display: block;\n}\n.itemlist header .header__title--top {\n  font-size: 24px;\n  font-weight: 700;\n  letter-spacing: 6.5px;\n}\n.itemlist header .header__title--bottom {\n  font-size: 13px;\n  font-weight: 500;\n  letter-spacing: 3.55px;\n  opacity: 0.65;\n  transform: translateY(-2px);\n}\n.itemlist__container {\n  padding: 15px;\n  display: grid;\n  row-gap: 8px;\n}\n.itemlist__item {\n  display: grid;\n  grid-template-columns: 1fr 3fr 1fr;\n  align-items: center;\n  padding: 5px 15px 5px 5px;\n  overflow: hidden;\n  border-radius: 0px;\n  box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);\n  cursor: pointer;\n  transition: transform 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98), box-shadow 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98);\n  background-color: #fff;\n}\n.itemlist__item:hover {\n  transform: scale(1.05);\n  box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);\n}\n.itemlist__picture {\n  width: 32px;\n  border-radius: 50%;\n  box-shadow: 0 0 0 6px #ebeef3, 0 0 0 11px #f3f4f6;\n}\n.itemlist__name {\n  color: #979cb0;\n  font-weight: 400;\n  font-size: 16px;\n  margin-left: -32px;\n}\n.itemlist__price {\n  color: #979cb0;\n  font-weight: 400;\n  font-size: 16px;\n  text-align: right;\n  margin-right: 0px;\n}\n.scrollx {\n  height: 720px;\n  overflow: auto;\n  margin-right: 15px;\n  border-right: 1px solid #DCDFE6;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".itemlist {\n  max-width: 490px;\n  width: 100%;\n  border-radius: 12px;\n  font-family: \"Source Sans Pro\", sans-serif;\n}\n.itemlist header {\n  --start: 15%;\n  height: 130px;\n  background: red;\n  color: #fff;\n  position: relative;\n  border-radius: 14px 12px 0 0;\n  overflow: hidden;\n}\n.itemlist header .header__title {\n  position: absolute;\n  z-index: 2;\n  top: 50%;\n  right: calc(var(--start) * 0.75);\n  transform: translateY(-50%);\n  text-transform: uppercase;\n  margin: 0;\n}\n.itemlist header .header__title span {\n  display: block;\n}\n.itemlist header .header__title--top {\n  font-size: 24px;\n  font-weight: 700;\n  letter-spacing: 6.5px;\n}\n.itemlist header .header__title--bottom {\n  font-size: 13px;\n  font-weight: 500;\n  letter-spacing: 3.55px;\n  opacity: 0.65;\n  transform: translateY(-2px);\n}\n.itemlist__container {\n  padding: 15px;\n  display: grid;\n  row-gap: 8px;\n}\n.itemlist__item {\n  display: grid;\n  grid-template-columns: 1fr 3fr 1fr;\n  align-items: center;\n  padding: 5px 15px 5px 5px;\n  overflow: hidden;\n  border-radius: 0px;\n  box-shadow: 0 5px 7px -1px rgba(51, 51, 51, 0.23);\n  cursor: pointer;\n  transition: transform 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98), box-shadow 0.25s cubic-bezier(0.7, 0.98, 0.86, 0.98);\n  background-color: #fff;\n}\n.itemlist__item:hover {\n  transform: scale(1.05);\n  box-shadow: 0 9px 47px 11px rgba(51, 51, 51, 0.18);\n}\n.itemlist__picture {\n  width: 32px;\n  height: 32px;\n  border-radius: 50%;\n  box-shadow: 0 0 0 6px #ebeef3, 0 0 0 11px #f3f4f6;\n}\n.itemlist__name {\n  color: #979cb0;\n  font-weight: 400;\n  font-size: 16px;\n  margin-left: -32px;\n}\n.itemlist__price {\n  color: #979cb0;\n  font-weight: 400;\n  font-size: 16px;\n  text-align: right;\n  margin-right: 0px;\n}\n.scrollx {\n  height: 512px;\n  overflow: auto;\n  margin-right: 15px;\n  border-right: 1px solid #dcdfe6;\n  border-bottom: 1px solid #dcdfe6;\n}\n.totales {\n  text-align: right;\n  overflow: auto;\n  margin-right: 15px;\n  border-right: 1px solid #dcdfe6;\n  padding-right: 10px;\n  font-weight: 400;\n  font-size: 16px;\n  color: #979cb0;\n}\n.totales-text {\n  font-weight: 400;\n  font-size: 16px;\n  color: #979cb0;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -103805,49 +103892,108 @@ var render = function () {
       _c(
         "el-row",
         [
-          _c("el-col", { attrs: { span: 6 } }, [
-            _c("div", { staticClass: "grid-content bg-purple scrollx" }, [
-              _c("article", { staticClass: "itemlist" }, [
-                _c(
-                  "main",
-                  { staticClass: "itemlist__container" },
-                  _vm._l(_vm.items, function (item) {
-                    return _c(
-                      "article",
-                      {
-                        key: item.name,
-                        staticClass: "itemlist__item",
-                        on: {
-                          click: function ($event) {
-                            return _vm.itemClick(item)
+          _c(
+            "el-col",
+            { attrs: { span: 6 } },
+            [
+              _c("div", { staticClass: "grid-content bg-purple scrollx" }, [
+                _c("article", { staticClass: "itemlist" }, [
+                  _c(
+                    "main",
+                    { staticClass: "itemlist__container" },
+                    _vm._l(_vm.items, function (item) {
+                      return _c(
+                        "article",
+                        {
+                          key: item.index,
+                          staticClass: "itemlist__item",
+                          on: {
+                            click: function ($event) {
+                              return _vm.itemClick(item)
+                            },
                           },
                         },
-                      },
-                      [
-                        _c("img", {
-                          staticClass: "itemlist__picture",
-                          attrs: { src: item.image },
-                        }),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "itemlist__name" }, [
-                          _vm._v(_vm._s(item.name)),
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "itemlist__price" }, [
-                          _vm._v(
-                            "\n                " +
-                              _vm._s(_vm.formatPrice(item.price)) +
-                              "\n              "
-                          ),
-                        ]),
-                      ]
-                    )
-                  }),
-                  0
-                ),
+                        [
+                          _c("img", {
+                            staticClass: "itemlist__picture",
+                            attrs: { src: item.image },
+                          }),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "itemlist__name" }, [
+                            _vm._v(_vm._s(item.nombre)),
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "itemlist__price" }, [
+                            _vm._v(
+                              "\n                " +
+                                _vm._s(_vm.formatPrice(item.precio)) +
+                                "\n              "
+                            ),
+                          ]),
+                        ]
+                      )
+                    }),
+                    0
+                  ),
+                ]),
               ]),
-            ]),
-          ]),
+              _vm._v(" "),
+              _c(
+                "el-row",
+                [
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("span", { staticClass: "totales-text" }, [
+                      _vm._v("Subtotal"),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("div", { staticClass: "totales" }, [
+                      _vm._v(_vm._s(_vm.formatPrice(_vm.subtotal()))),
+                    ]),
+                  ]),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-row",
+                [
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("span", { staticClass: "totales-text" }, [
+                      _vm._v("IVA"),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("div", { staticClass: "totales" }, [
+                      _vm._v(_vm._s(_vm.formatPrice(_vm.iva()))),
+                    ]),
+                  ]),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-row",
+                [
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("span", { staticClass: "totales-text" }, [
+                      _vm._v("Total"),
+                    ]),
+                  ]),
+                  _vm._v(" "),
+                  _c("el-col", { attrs: { span: 12 } }, [
+                    _c("div", { staticClass: "totales" }, [
+                      _vm._v(_vm._s(_vm.formatPrice(_vm.total()))),
+                    ]),
+                  ]),
+                ],
+                1
+              ),
+            ],
+            1
+          ),
           _vm._v(" "),
           _c(
             "el-col",
@@ -103862,6 +104008,7 @@ var render = function () {
                       [
                         _c("el-input", {
                           attrs: { placeholder: "Buscar", clearable: "" },
+                          on: { change: _vm.search },
                           model: {
                             value: _vm.inputSearch,
                             callback: function ($$v) {
@@ -103913,69 +104060,100 @@ var render = function () {
                             "el-tab-pane",
                             { attrs: { label: "Producto", name: "first" } },
                             [
-                              _c(
-                                "div",
-                                { staticClass: "block" },
-                                [
-                                  _c(
-                                    "el-image",
-                                    {
-                                      staticStyle: { width: "320px" },
-                                      attrs: {
-                                        src: _vm.selectedItem
-                                          ? _vm.selectedItem.image
-                                          : "",
-                                      },
-                                    },
+                              _vm.selectedItem
+                                ? _c(
+                                    "div",
                                     [
+                                      _c("h3", [
+                                        _vm._v(_vm._s(_vm.selectedItem.nombre)),
+                                      ]),
+                                      _vm._v(" "),
                                       _c(
-                                        "div",
+                                        "el-image",
                                         {
-                                          staticClass: "image-slot",
-                                          attrs: { slot: "error" },
-                                          slot: "error",
+                                          staticStyle: { width: "320px" },
+                                          attrs: {
+                                            src: _vm.selectedItem.image,
+                                          },
                                         },
                                         [
-                                          _c("i", {
-                                            staticClass:
-                                              "el-icon-picture-outline",
-                                          }),
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass: "image-slot",
+                                              attrs: { slot: "error" },
+                                              slot: "error",
+                                            },
+                                            [
+                                              _c("i", {
+                                                staticClass:
+                                                  "el-icon-picture-outline",
+                                              }),
+                                            ]
+                                          ),
                                         ]
                                       ),
-                                    ]
-                                  ),
-                                ],
-                                1
-                              ),
-                              _vm._v(
-                                "\n\n              Cantidad:\n              "
-                              ),
-                              _c("el-input-number", {
-                                attrs: {
-                                  size: "small",
-                                  "controls-position": "right",
-                                  min: 1,
-                                  max: 1000,
-                                },
-                                on: { change: _vm.onCantChanged },
-                                model: {
-                                  value: _vm.num,
-                                  callback: function ($$v) {
-                                    _vm.num = $$v
-                                  },
-                                  expression: "num",
-                                },
-                              }),
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
                               _vm._v(" "),
-                              _c("el-button", {
-                                attrs: {
-                                  type: "danger",
-                                  icon: "el-icon-delete",
-                                  size: "small",
-                                },
-                              }),
-                            ],
-                            1
+                              _vm.selectedItem
+                                ? _c(
+                                    "div",
+                                    [
+                                      _c("span", [_vm._v("Cantidad")]),
+                                      _vm._v(" "),
+                                      _c("el-input-number", {
+                                        attrs: {
+                                          size: "small",
+                                          "controls-position": "right",
+                                          min: 1,
+                                          max: 1000,
+                                        },
+                                        on: { change: _vm.onCantChanged },
+                                        model: {
+                                          value: _vm.cantidad,
+                                          callback: function ($$v) {
+                                            _vm.cantidad = $$v
+                                          },
+                                          expression: "cantidad",
+                                        },
+                                      }),
+                                      _vm._v(" "),
+                                      _c("el-button", {
+                                        attrs: {
+                                          type: "danger",
+                                          icon: "el-icon-delete",
+                                          size: "small",
+                                        },
+                                        on: { click: _vm.deleteItem },
+                                      }),
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.selectedItem
+                                ? _c("div", [
+                                    _c("p", [
+                                      _vm._v(
+                                        "Descripción: " +
+                                          _vm._s(_vm.selectedItem.descripcion)
+                                      ),
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("p", [
+                                      _vm._v(
+                                        "Especificación: " +
+                                          _vm._s(
+                                            _vm.selectedItem.especificacion
+                                          )
+                                      ),
+                                    ]),
+                                  ])
+                                : _vm._e(),
+                            ]
                           ),
                           _vm._v(" "),
                           _c(

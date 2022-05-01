@@ -14,24 +14,43 @@
               <article
                 class="itemlist__item"
                 v-for="item in items"
-                :key="item.name"
+                :key="item.index"
                 @click="itemClick(item)"
               >
                 <img :src="item.image" class="itemlist__picture" />
-                <span class="itemlist__name">{{ item.name }}</span>
+                <span class="itemlist__name">{{ item.nombre }}</span>
                 <span class="itemlist__price">
-                  {{ formatPrice(item.price) }}
+                  {{ formatPrice(item.precio) }}
                 </span>
               </article>
             </main>
           </article>
         </div>
+        <el-row>
+          <el-col :span="12"><span class="totales-text">Subtotal</span></el-col>
+          <el-col :span="12">
+            <div class="totales">{{ formatPrice(subtotal()) }}</div>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"><span class="totales-text">IVA</span></el-col>
+          <el-col :span="12">
+            <div class="totales">{{ formatPrice(iva()) }}</div>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12"><span class="totales-text">Total</span></el-col>
+          <el-col :span="12">
+            <div class="totales">{{ formatPrice(total()) }}</div>
+          </el-col>
+        </el-row>
       </el-col>
       <el-col :span="18">
         <el-row>
           <el-col :span="20">
             <div>
               <el-input
+                @change="search"
                 placeholder="Buscar"
                 v-model="inputSearch"
                 clearable
@@ -47,31 +66,37 @@
           <el-col :span="24">
             <el-tabs v-model="activeName" @tab-click="handleClick">
               <el-tab-pane label="Producto" name="first">
-                <div class="block">
-                  <el-image
-                    style="width: 320px;"
-                    :src="selectedItem ? selectedItem.image : ''"
-                  >
+                <div v-if="selectedItem">
+                  <h3>{{ selectedItem.nombre }}</h3>
+                  <el-image style="width: 320px;" :src="selectedItem.image">
                     <div slot="error" class="image-slot">
                       <i class="el-icon-picture-outline"></i>
                     </div>
                   </el-image>
                 </div>
 
-                Cantidad:
-                <el-input-number
-                  size="small"
-                  v-model="num"
-                  controls-position="right"
-                  @change="onCantChanged"
-                  :min="1"
-                  :max="1000"
-                ></el-input-number>
-                <el-button
-                  type="danger"
-                  icon="el-icon-delete"
-                  size="small"
-                ></el-button>
+                <div v-if="selectedItem">
+                  <span>Cantidad</span>
+                  <el-input-number
+                    size="small"
+                    v-model="cantidad"
+                    controls-position="right"
+                    @change="onCantChanged"
+                    :min="1"
+                    :max="1000"
+                  ></el-input-number>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="small"
+                    @click="deleteItem"
+                  ></el-button>
+                </div>
+
+                <div v-if="selectedItem">
+                  <p>Descripción: {{ selectedItem.descripcion }}</p>
+                  <p>Especificación: {{ selectedItem.especificacion }}</p>
+                </div>
               </el-tab-pane>
               <el-tab-pane label="Favoritos" name="second">
                 <file-upload
@@ -106,16 +131,8 @@ export default {
   },
   data() {
     return {
-      items: [
-        {
-          index: 0,
-          name: 'Jaula',
-          image:
-            'https://http2.mlstatic.com/D_NQ_NP_802768-MLM46356969261_062021-O.webp',
-          price: 1500,
-        },
-      ],
-      num: 1,
+      items: [],
+      cantidad: 1,
       selectedItem: null,
       selectedFile: null,
       activeName: 'first',
@@ -141,21 +158,83 @@ export default {
         .get(`/api/search?kw=${this.inputSearch}`)
         .then(function (response) {
           console.log(response)
+          let data = response.data.data
+
+          if (data.length == 0) {
+            $this
+              .$confirm(
+                `¿Desea registrar el artículo "${$this.inputSearch}?`,
+                'Artículo desconocido',
+                {
+                  confirmButtonText: 'Si',
+                  cancelButtonText: 'No',
+                  type: 'warning',
+                },
+              )
+              .then((e) => {
+                alert('not implemented yet!')
+              })
+              .catch((e) => {})
+          }
+
+          for (let i = 0; i < data.length; i++) {
+            console.log(data[i])
+
+            $this.items.push(data[i])
+          }
+
+          for (let i = 0; i < $this.items.length; i++) {
+            $this.items[i].index = i + 1
+          }
+
+          // set selected item (last item)
+          $this.itemClick(
+            $this.items.length > 0 ? $this.items[$this.items.length - 1] : null,
+          )
         })
         .catch((error) => {
           console.error(error)
         })
     },
+    deleteItem() {
+      let $this = this
+      this.$confirm(
+        `¿Desea eliminar este artículo del carrito?`,
+        'Eliminar Artículo',
+        {
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No',
+          type: 'warning',
+        },
+      )
+        .then((e) => {
+          console.log(e)
+          $this.items = $this.items.filter((s) => s.id != $this.selectedItem.id)
+          $this.itemClick($this.items.length > 0 ? $this.items[0] : null)
+        })
+        .catch((e) => {})
+    },
     onCantChanged(value) {
-      this.items = this.items.filter((s) => s.name != this.selectedItem.name)
+      this.items = this.items.filter((s) => s.id != this.selectedItem.id)
       for (let i = 0; i < value; i++) {
         this.items.push({
-          index: this.items.length + 1,
-          name: this.selectedItem.name,
-          price: this.selectedItem.price,
+          id: this.selectedItem.id,
           image: this.selectedItem.image,
+          nombre: this.selectedItem.nombre,
+          codBar: this.selectedItem.codBar,
+          familia: this.selectedItem.familia,
+          descripcion: this.selectedItem.descripcion,
+          precio: this.selectedItem.precio,
+          maximos: this.selectedItem.maximos,
+          minimos: this.selectedItem.minimos,
+          stock: this.selectedItem.stock,
+          favorito: this.selectedItem.favorito,
+          created_at: this.selectedItem.created_at,
+          updated_at: this.selectedItem.updated_at,
+          index: 0,
         })
       }
+
       for (let i = 0; i < this.items.length; i++) {
         this.items[i].index = i + 1
       }
@@ -199,8 +278,22 @@ export default {
     },
     itemClick(e) {
       this.selectedItem = e
-      this.num = this.items.filter((s) => s.name == e.name).length
-      console.log(e)
+      this.cantidad = this.items.filter((s) => s.id == e.id).length
+    },
+    subtotal() {
+      return this.total() - this.iva()
+    },
+    iva() {
+      let t = 0
+      for (let i = 0; i < this.items.length; i++)
+        t += parseFloat(this.items[i].precio) * 0.8
+      return t
+    },
+    total() {
+      let t = 0
+      for (let i = 0; i < this.items.length; i++)
+        t += parseFloat(this.items[i].precio)
+      return t
     },
   },
 }
@@ -277,6 +370,7 @@ export default {
 
   &__picture {
     width: 32px;
+    height: 32px;
     border-radius: 50%;
     box-shadow: 0 0 0 6px #ebeef3, 0 0 0 11px #f3f4f6;
   }
@@ -298,9 +392,27 @@ export default {
 }
 
 .scrollx {
-  height: 720px;
+  height: 512px;
   overflow: auto;
   margin-right: 15px;
-  border-right: 1px solid #DCDFE6;
+  border-right: 1px solid #dcdfe6;
+  border-bottom: 1px solid #dcdfe6;
+}
+
+.totales {
+  text-align: right;
+  overflow: auto;
+  margin-right: 15px;
+  border-right: 1px solid #dcdfe6;
+  padding-right: 10px;
+  font-weight: 400;
+  font-size: 16px;
+  color: #979cb0;
+}
+
+.totales-text {
+  font-weight: 400;
+  font-size: 16px;
+  color: #979cb0;
 }
 </style>
