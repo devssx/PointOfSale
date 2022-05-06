@@ -35,6 +35,8 @@ Vue.mixin(commons);
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('sales-component', require('./components/SalesComponent.vue').default);
+Vue.component('item-component', require('./components/Items/CreateItemComponent.vue').default);
+
 
 
 // tools

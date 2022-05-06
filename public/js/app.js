@@ -6978,6 +6978,289 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['hidden'],
+  data: function data() {
+    var _rules;
+
+    return {
+      selectedFile: null,
+      dialogVisible: false,
+      labelPosition: 'left',
+      loading: false,
+      item: {
+        nombre: '',
+        codBar: '',
+        familia: '',
+        descripcion: '',
+        especificacion: '',
+        precio: 0,
+        maximos: 0,
+        minimos: 0,
+        stock: 0,
+        favorito: 0,
+        image: ''
+      },
+      rules: (_rules = {
+        nombre: [{
+          required: true,
+          message: 'Campo nombre es obligatorio',
+          trigger: 'change'
+        }],
+        codBar: [{
+          required: true,
+          message: 'Campo código es obligatorio',
+          trigger: 'change'
+        }],
+        precio: [{
+          required: true,
+          message: 'Campo precio es obligatorio',
+          trigger: 'change'
+        }]
+      }, _defineProperty(_rules, "precio", [{
+        required: true,
+        number: true,
+        min: 0.1,
+        message: 'Precio debe ser un numero mayor a 0.1',
+        trigger: 'change'
+      }]), _defineProperty(_rules, "maximos", [{
+        required: true,
+        number: true,
+        min: 1,
+        message: 'Máximos debe ser un numero mayor a 0',
+        trigger: 'change'
+      }]), _defineProperty(_rules, "minimos", [{
+        required: true,
+        number: true,
+        min: 1,
+        message: 'Minimos debe ser un numero mayor a 0',
+        trigger: 'change'
+      }]), _rules)
+    };
+  },
+  methods: {
+    showDialog: function showDialog(item) {
+      this.dialogVisible = true;
+    },
+    onSelected: function onSelected(file) {
+      this.selectedFile = file;
+      this.item.image = this.selectedFile.name; // size 1Mb
+
+      if (this.selectedFile.size > 1000000) {
+        this.$alert('Tamaño excedido, la imagen debe ser menor a 1 Mb', 'Error', {
+          confirmButtonText: 'OK',
+          type: 'error'
+        }); // invalid size
+
+        this.selectedFile = null;
+        this.item.image = '';
+      }
+    },
+    onPreview: function onPreview(imgData) {
+      $('#preview').attr('src', imgData);
+    },
+    handleClose: function handleClose(done) {
+      var $this = this;
+
+      if ($this.item.codBar) {
+        $this.$confirm('¿Estas seguro de no guardar el producto?').then(function (_) {
+          $this.cancel();
+          done();
+        })["catch"](function (_) {});
+      } else {
+        $this.cancel();
+        done();
+      }
+    },
+    cancel: function cancel() {
+      this.dialogVisible = false;
+      this.loading = false;
+      this.$refs.itemForm.resetFields();
+      this.selectedFile = null;
+    },
+    save: function save() {
+      var $this = this;
+      $this.$refs.itemForm.validate(function (valid) {
+        //console.log($this.selectedFile);
+        if (valid) {
+          $this.loading = true;
+
+          if ($this.selectedFile) {
+            // upload a file
+            $this.$refs.uploader.submit(function (imgServerPath) {
+              // success
+              $this.item.image = imgServerPath;
+              $this.pushData();
+            }, function (error) {
+              console.log(error);
+              $this.$notify({
+                title: 'Error!',
+                message: 'Ha ocurrido un error al intentar subir la imagen, intenta con otra',
+                type: 'error'
+              });
+              $this.loading = false;
+            });
+          } else {
+            $this.pushData();
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    pushData: function pushData() {
+      var $this = this;
+      $this.$refs.itemForm.validate(function (valid) {
+        if (valid) {
+          $this.loading = true;
+          axios.post('/api/newItem', $this.item).then(function (response) {
+            if (response.data.error) {
+              $this.$alert(response.data.error, 'Error', {
+                confirmButtonText: 'OK',
+                type: 'error'
+              });
+              $this.loading = false;
+              return;
+            }
+
+            $this.$notify({
+              title: '¡Exito!',
+              message: 'El producto fue agregado correctamente',
+              type: 'success'
+            });
+            $this.$root.$emit('onNewItemCreated', response.data);
+            $this.$root.$emit('refreshTable');
+            $this.cancel();
+          })["catch"](function (error) {
+            if (error.response.data.errors) {
+              var errors = error.response.data.errors;
+              $this.$alert(errors[Object.keys(errors)[0]][0], 'Error', {
+                confirmButtonText: 'OK',
+                type: 'error'
+              });
+            }
+
+            $this.loading = false;
+          });
+        } else {
+          return false;
+        }
+      });
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/SalesComponent.vue?vue&type=script&lang=js&":
 /*!*********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/SalesComponent.vue?vue&type=script&lang=js& ***!
@@ -6989,6 +7272,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
 //
 //
 //
@@ -7536,7 +7820,8 @@ Vue.mixin(_mixins_commons__WEBPACK_IMPORTED_MODULE_3__["default"]);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', (__webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]));
-Vue.component('sales-component', (__webpack_require__(/*! ./components/SalesComponent.vue */ "./resources/js/components/SalesComponent.vue")["default"])); // tools
+Vue.component('sales-component', (__webpack_require__(/*! ./components/SalesComponent.vue */ "./resources/js/components/SalesComponent.vue")["default"]));
+Vue.component('item-component', (__webpack_require__(/*! ./components/Items/CreateItemComponent.vue */ "./resources/js/components/Items/CreateItemComponent.vue")["default"])); // tools
 
 Vue.component('file-upload', (__webpack_require__(/*! ./components/Tools/UploadFile */ "./resources/js/components/Tools/UploadFile.vue")["default"]));
 Vue.component('image-dialog', (__webpack_require__(/*! ./components/Tools/ImageDialog */ "./resources/js/components/Tools/ImageDialog.vue")["default"]));
@@ -103555,6 +103840,45 @@ component.options.__file = "resources/js/components/ExampleComponent.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/Items/CreateItemComponent.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/Items/CreateItemComponent.vue ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateItemComponent.vue?vue&type=template&id=3f687978& */ "./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978&");
+/* harmony import */ var _CreateItemComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateItemComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CreateItemComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__.render,
+  _CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Items/CreateItemComponent.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/SalesComponent.vue":
 /*!****************************************************!*\
   !*** ./resources/js/components/SalesComponent.vue ***!
@@ -103690,6 +104014,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateItemComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateItemComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateItemComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/SalesComponent.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************!*\
   !*** ./resources/js/components/SalesComponent.vue?vue&type=script&lang=js& ***!
@@ -103764,6 +104104,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ExampleComponent.vue?vue&type=template&id=299e239e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ExampleComponent.vue?vue&type=template&id=299e239e&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978& ***!
+  \**********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateItemComponent_vue_vue_type_template_id_3f687978___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateItemComponent.vue?vue&type=template&id=3f687978& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978&");
 
 
 /***/ }),
@@ -103858,6 +104215,373 @@ var render = function () {
         "div",
         { staticClass: "el-upload__tip", attrs: { slot: "tip" }, slot: "tip" },
         [_vm._v("\n    Solo archivos jpg/png con un tamaño menor de 500kb\n  ")]
+      ),
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Items/CreateItemComponent.vue?vue&type=template&id=3f687978& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-col",
+    { attrs: { span: 5 } },
+    [
+      !_vm.hidden
+        ? _c(
+            "el-button",
+            {
+              staticStyle: { float: "right" },
+              attrs: { type: "primary", icon: "el-icon-circle-plus" },
+              on: {
+                click: function ($event) {
+                  _vm.dialogVisible = true
+                },
+              },
+            },
+            [_vm._v("\n    Registrar Producto\n  ")]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            title: "Registar Producto",
+            visible: _vm.dialogVisible,
+            width: "40%",
+            "before-close": _vm.handleClose,
+          },
+          on: {
+            "update:visible": function ($event) {
+              _vm.dialogVisible = $event
+            },
+          },
+        },
+        [
+          _c(
+            "el-row",
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 24 } },
+                [
+                  _c(
+                    "el-form",
+                    {
+                      ref: "itemForm",
+                      attrs: {
+                        "label-position": _vm.labelPosition,
+                        rules: _vm.rules,
+                        model: _vm.item,
+                        "label-width": "150px",
+                      },
+                    },
+                    [
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Nombre", prop: "nombre" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.nombre,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "nombre", $$v)
+                              },
+                              expression: "item.nombre",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Código", prop: "codBar" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.codBar,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "codBar", $$v)
+                              },
+                              expression: "item.codBar",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Familia", prop: "familia" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.familia,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "familia", $$v)
+                              },
+                              expression: "item.familia",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        {
+                          attrs: { label: "Descripción", prop: "descripcion" },
+                        },
+                        [
+                          _c("el-input", {
+                            attrs: {
+                              type: "textarea",
+                              maxlength: "500",
+                              rows: 2,
+                              "show-word-limit": "",
+                            },
+                            model: {
+                              value: _vm.item.descripcion,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "descripcion", $$v)
+                              },
+                              expression: "item.descripcion",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        {
+                          attrs: {
+                            label: "Especificación",
+                            prop: "especificacion",
+                          },
+                        },
+                        [
+                          _c("el-input", {
+                            attrs: {
+                              type: "textarea",
+                              maxlength: "500",
+                              rows: 2,
+                              "show-word-limit": "",
+                            },
+                            model: {
+                              value: _vm.item.especificacion,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "especificacion", $$v)
+                              },
+                              expression: "item.especificacion",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Precio", prop: "precio" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.precio,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "precio", $$v)
+                              },
+                              expression: "item.precio",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Máximos", prop: "maximos" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.maximos,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "maximos", $$v)
+                              },
+                              expression: "item.maximos",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Minimos", prop: "minimos" } },
+                        [
+                          _c("el-input", {
+                            model: {
+                              value: _vm.item.minimos,
+                              callback: function ($$v) {
+                                _vm.$set(_vm.item, "minimos", $$v)
+                              },
+                              expression: "item.minimos",
+                            },
+                          }),
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "el-form-item",
+                        { attrs: { label: "Imágen", prop: "image" } },
+                        [
+                          _c(
+                            "el-col",
+                            { attrs: { span: 21 } },
+                            [
+                              _c("el-input", {
+                                model: {
+                                  value: _vm.item.image,
+                                  callback: function ($$v) {
+                                    _vm.$set(_vm.item, "image", $$v)
+                                  },
+                                  expression: "item.image",
+                                },
+                              }),
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "el-col",
+                            { attrs: { span: 3 } },
+                            [
+                              _c("file-upload", {
+                                ref: "uploader",
+                                attrs: {
+                                  onSelected: _vm.onSelected,
+                                  onPreview: _vm.onPreview,
+                                  action: "/file/upload",
+                                },
+                              }),
+                            ],
+                            1
+                          ),
+                        ],
+                        1
+                      ),
+                    ],
+                    1
+                  ),
+                ],
+                1
+              ),
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm.selectedFile
+            ? _c(
+                "el-row",
+                {
+                  staticStyle: { "text-align": "center" },
+                  attrs: { type: "flex", align: "middle" },
+                },
+                [
+                  _c("el-col", { attrs: { span: 24 } }, [
+                    _c("img", {
+                      staticStyle: { width: "256px" },
+                      attrs: { id: "preview" },
+                    }),
+                  ]),
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.selectedFile && _vm.item.image != ""
+            ? _c(
+                "el-row",
+                {
+                  staticStyle: { "text-align": "center" },
+                  attrs: { type: "flex", align: "middle" },
+                },
+                [
+                  _c(
+                    "el-col",
+                    { attrs: { span: 24 } },
+                    [
+                      _c("el-image", {
+                        staticStyle: { width: "256px" },
+                        attrs: { src: _vm.item.image },
+                      }),
+                    ],
+                    1
+                  ),
+                ],
+                1
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer",
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function ($event) {
+                      return _vm.cancel()
+                    },
+                  },
+                },
+                [_vm._v("Cancelar")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                {
+                  attrs: { type: "primary", loading: _vm.loading },
+                  on: {
+                    click: function ($event) {
+                      return _vm.save()
+                    },
+                  },
+                },
+                [_vm._v("\n        Guardar\n      ")]
+              ),
+            ],
+            1
+          ),
+        ],
+        1
       ),
     ],
     1
@@ -104153,7 +104877,10 @@ var render = function () {
                                     ]),
                                   ])
                                 : _vm._e(),
-                            ]
+                              _vm._v(" "),
+                              _c("item-component"),
+                            ],
+                            1
                           ),
                           _vm._v(" "),
                           _c(

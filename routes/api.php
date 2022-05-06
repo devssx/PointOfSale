@@ -19,3 +19,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/search', [App\Http\Controllers\ProductoController::class, 'search']);
+Route::post('/newItem', [App\Http\Controllers\ProductoController::class, 'save']);

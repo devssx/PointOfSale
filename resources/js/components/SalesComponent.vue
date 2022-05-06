@@ -97,6 +97,7 @@
                   <p>Descripción: {{ selectedItem.descripcion }}</p>
                   <p>Especificación: {{ selectedItem.especificacion }}</p>
                 </div>
+                <item-component></item-component>
               </el-tab-pane>
               <el-tab-pane label="Favoritos" name="second">
                 <file-upload

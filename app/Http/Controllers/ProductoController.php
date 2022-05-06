@@ -115,4 +115,22 @@ class ProductoController extends Controller
     {
         //
     }
+
+    public function save(Request $request)
+    {
+        $newItem = new Producto;
+        $newItem->nombre = $request->get('nombre');
+        $newItem->codBar = $request->get('codBar');
+        $newItem->familia = $request->get('familia');
+        $newItem->descripcion = $request->get('descripcion');
+        $newItem->especificacion = $request->get('especificacion');
+        $newItem->precio = $request->get('precio');
+        $newItem->maximos = $request->get('maximos');
+        $newItem->minimos = $request->get('minimos');
+        $newItem->stock = $request->get('stock');
+        $newItem->favorito = $request->get('favorito');
+        $newItem->image = $request->get('image');
+        $newItem->save();
+        return $newItem;
+    }
 }
