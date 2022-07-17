@@ -97,7 +97,7 @@
                   <p>Descripción: {{ selectedItem.descripcion }}</p>
                   <p>Especificación: {{ selectedItem.especificacion }}</p>
                 </div>
-                <item-component></item-component>
+                <item-component hidden="true"></item-component>
               </el-tab-pane>
               <el-tab-pane label="Favoritos" name="second">
                 <file-upload
@@ -285,15 +285,11 @@ export default {
       return this.total() - this.iva()
     },
     iva() {
-      let t = 0
-      for (let i = 0; i < this.items.length; i++)
-        t += parseFloat(this.items[i].precio) * 0.8
-      return t
+      return this.total() * 0.08
     },
     total() {
       let t = 0
-      for (let i = 0; i < this.items.length; i++)
-        t += parseFloat(this.items[i].precio)
+      this.items.map((item) => (t += parseFloat(item.precio)))
       return t
     },
   },

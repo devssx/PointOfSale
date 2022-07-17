@@ -7533,21 +7533,13 @@ __webpack_require__.r(__webpack_exports__);
       return this.total() - this.iva();
     },
     iva: function iva() {
-      var t = 0;
-
-      for (var i = 0; i < this.items.length; i++) {
-        t += parseFloat(this.items[i].precio) * 0.8;
-      }
-
-      return t;
+      return this.total() * 0.08;
     },
     total: function total() {
       var t = 0;
-
-      for (var i = 0; i < this.items.length; i++) {
-        t += parseFloat(this.items[i].precio);
-      }
-
+      this.items.map(function (item) {
+        return t += parseFloat(item.precio);
+      });
       return t;
     }
   }
@@ -104878,7 +104870,9 @@ var render = function () {
                                   ])
                                 : _vm._e(),
                               _vm._v(" "),
-                              _c("item-component"),
+                              _c("item-component", {
+                                attrs: { hidden: "true" },
+                              }),
                             ],
                             1
                           ),
